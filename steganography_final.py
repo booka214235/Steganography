@@ -19,7 +19,7 @@ def steganography_encoding(input_image, output_image):
         except:
             return f"Cannot read {filename}"
     else:
-        return ("Invalid choice please enter 1, 2, or 3")
+        return ("Invalid choice please enter 1 or 2")
 
     if secret_message == "":                                                    # edge case to see if the message was empty
         return("this is an empty message write any thing to encode")
@@ -40,9 +40,9 @@ def steganography_encoding(input_image, output_image):
         with open(input_image, 'rb') as file:
             data = bytearray(file.read())
     except FileNotFoundError:                                                   # edge case file is not found
-        return f"File {input_image} not found!"
+        return f"File {input_image} not found"
     except:
-        return f"Cannot read {input_image}!"                                                              
+        return f"Cannot read {input_image}"                                                              
     
     if data[:2] != b'BM':                                                       # edge case that checks if the image is an bmp extension
         return("This is not a bmp image ") 
