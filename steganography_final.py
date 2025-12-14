@@ -58,7 +58,7 @@ def steganography_encoding(input_image, output_image):
         file.write(data)
     return("messaage was hidden succssufully")
 
-#---------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------
 
 #Decoding function 
 def decode_steganography(image_file):
@@ -90,3 +90,34 @@ def decode_steganography(image_file):
     for i in range(0,len(message_bits),8):
         message += chr(int(message_bits[i:i+8], 2))
     return message
+#------------------------------------------------------------------------------------------------------------------
+
+#user interface 
+while True:
+    print("----------------------------------------------------------------------------------")
+    print("STEGANOGRAPHY APPLICATION")
+    print("----------------------------------------------------------------------------------")
+    print("1 Encode a message")
+    print("2 Decode a message")
+    print("3 Exit")
+    print("----------------------------------------------------------------------------------")
+    
+    user_choice = input("Enter your choice 1, 2, or 3: ")                       #simple user interface to provide options 
+    
+    if user_choice == "1":
+        input_image = input("Enter input BMP image: ")
+        output_image = input("Enter output BMP image name: ")
+        result = steganography_encoding(input_image, output_image)
+        print(result)
+        
+    elif user_choice == "2":
+        image_file = input("Enter encoded BMP image: ")
+        result = decode_steganography(image_file)
+        print(result)
+        
+    elif user_choice == "3":
+        print("Goodbye!")
+        break
+        
+    else:
+        print("Invalid choice please enter 1, 2, or 3.")
