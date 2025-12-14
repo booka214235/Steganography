@@ -1,3 +1,4 @@
+#Encoding function 
 def steganography_encoding(input_image, output_image):
 
     password = input("enter password to encode: ")                              #making password for extra security
@@ -57,3 +58,35 @@ def steganography_encoding(input_image, output_image):
         file.write(data)
     return("messaage was hidden succssufully")
 
+#---------------------------------------------------------------------------------
+
+#Decoding function 
+def decode_steganography(image_file):
+    password = input("enter password to decode: ")                            #making password for extra security
+    if password !="12345":
+        return("wrong password try again")
+    
+    try:
+        with open(image_file, 'rb') as file:                      
+            data = bytearray(file.read())
+    except FileNotFoundError:                                                 #checks if text file doesn't exist
+        return f"File {image_file} not found"
+    except:
+        return f"Cannot read {image_file}"
+
+    byte_index = 54                                                           #we start extracting LSB from bit-54 since we started editing in the 
+    bits = ""
+    message_bits = ""
+
+    while byte_index < len(data):
+        bits += str(data[byte_index] & 1)
+        byte_index += 1
+
+        if bits.endswith ("1111111100000000"):                                 #Delimiter check  
+            message_bits = bits[0:-16]
+            break
+
+    message = ''
+    for i in range(0,len(message_bits),8):
+        message += chr(int(message_bits[i:i+8], 2))
+    return message
