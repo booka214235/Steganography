@@ -10,8 +10,15 @@ def steganography_encoding(input_image, output_image):
     
     elif choice == "2":
         filename = input("Enter filename: ")
-        with open(filename, 'r') as f:
-            secret_message = f.read()
+        try:
+            with open(filename, 'r') as file:
+                secret_message = file.read()
+        except FileNotFoundError:                                               #checks if text file doesn't exist
+            return f"file {filename} not found"
+        except:
+            return f"Cannot read {filename}"
+    else:
+        return ("Invalid choice please enter 1, 2, or 3")
 
     if secret_message == "":                                                    #first edge case to see if the message was empty
         return("this is an empty message write any thing to encode")
@@ -23,13 +30,30 @@ def steganography_encoding(input_image, output_image):
         else:
             z = format(ord(char), "08b") 
             binary_message +=z
-    binary_message += "11111111000000000"                                       #delimiter that will force decoding function to stop  
+    binary_message += "1111111100000000"                                       #delimiter that will force decoding function to stop  
     
-    with open(input_image, 'rb') as file:
-        data = bytearray(file.read())                                                             
+    try:
+        with open(input_image, 'rb') as file:
+            data = bytearray(file.read())
+    except FileNotFoundError:                                                   #third edge case file is not found
+        return f"Error: File {input_image} not found!"
+    except:
+        return f"Error: Cannot read {input_image}!"                                                              
     
-    if data[:2] != b'BM':                                                       #third edge case that checks if the image is an bmp extension
+    if data[:2] != b'BM':                                                       #fourth edge case that checks if the image is an bmp extension
         return("This is not a bmp image ") 
     
-    if len(binary_message) > len(data) - 54:                                    #fourth edge case that checks if the length of message is bigger than image size
+    if len(binary_message) > len(data) - 54:                                    #fifth edge case that checks if the length of message is bigger than image size
         return("the message is too long that cannot fit the image")
+    
+    byte_index = 54                                                             #starting from 54 since first 54 byte is for bmp header. BMP bytes 54+ represent: B1, G1, R1, B2, G2, R2, ...
+    for bit in binary_message: 
+        data[byte_index] = (data[byte_index] & 0b11111110) | int(bit) 
+        byte_index+=1
+        if byte_index >= len(data):                                
+            break
+    
+    with open(output_image, "wb") as file:
+        file.write(data)
+    return("messaage was hidden succssufully")
+
