@@ -21,12 +21,15 @@ def steganography_encoding(input_image, output_image):
     else:
         return ("Invalid choice please enter 1, 2, or 3")
 
-    if secret_message == "":                                                    #first edge case to see if the message was empty
+    if secret_message == "":                                                    # edge case to see if the message was empty
         return("this is an empty message write any thing to encode")
     
+    if input_image == output_image:                                             #edgecaase to see if the input image is the same as output image 
+        return"input image can not be the same as output image"
+   
     binary_message = ""
     for char in secret_message:
-        if ord(char) > 127 or ord(char) < 0:                                    #second edge case to see if there was any unsported chrachter
+        if ord(char) > 127 or ord(char) < 0:                                    #edge case to see if there was any unsported chrachter
             return("the message contains undefined charachters")
         else:
             z = format(ord(char), "08b") 
@@ -36,15 +39,15 @@ def steganography_encoding(input_image, output_image):
     try:
         with open(input_image, 'rb') as file:
             data = bytearray(file.read())
-    except FileNotFoundError:                                                   #third edge case file is not found
-        return f"Error: File {input_image} not found!"
+    except FileNotFoundError:                                                   # edge case file is not found
+        return f"File {input_image} not found!"
     except:
-        return f"Error: Cannot read {input_image}!"                                                              
+        return f"Cannot read {input_image}!"                                                              
     
-    if data[:2] != b'BM':                                                       #fourth edge case that checks if the image is an bmp extension
+    if data[:2] != b'BM':                                                       # edge case that checks if the image is an bmp extension
         return("This is not a bmp image ") 
     
-    if len(binary_message) > len(data) - 54:                                    #fifth edge case that checks if the length of message is bigger than image size
+    if len(binary_message) > len(data) - 54:                                    #edge case that checks if the length of message is bigger than image size
         return("the message is too long that cannot fit the image")
     
     byte_index = 54                                                             #starting from 54 since first 54 byte is for bmp header. BMP bytes 54+ represent: B1, G1, R1, B2, G2, R2, ...
